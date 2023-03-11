@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //节点结构
+        function BinarySearchTree(){
+            // 用于创建节点的类
+            function Node(key) {
+                this.key = key;
+                this.left = null;
+                this.right = null;
+            }
+            // 根节点
+            let root = null;
+
+            // 插入一个键
+            this.insert = function(key) {
+                let newNode = new Node(key)
+                root === null ? (root = newNode) : (insertNode(root, newNode))
+            }
+
+            function insertNode(node, newNode){
+                if(newNode.key < node.key) {
+                    node.left === null ? (node.left = newNode) : (insertNode(node.left, newNode))
+                }else {
+                    node.right === null ? (node.right = newNode) : (insertNode(node.right, newNode))
+                }
+            }
+
+            this.func=function(){
+                DLR(root)
+                // LDR(root)
+                // LRD(root)
+            }
+
+            function DLR(root){
+                console.log(root.key)
+                if(root.left){
+                    DLR(root.left)
+                }
+                if(root.right){
+                    DLR(root.right)
+                }
+            }
+
+            //2、中序遍历
+            function LDR(root){
+                
+                if(root.left){
+                    LDR(root.left);
+                }
+                console.log(root.key);
+                if(root.right){
+                    LDR(root.right);
+                }
+            }
+
+            //3、后序遍历
+            function LRD(root){
+                if(root.left){
+                    LRD(root.left);
+                }
+                if(root.right){
+                    LRD(root.right);
+                }
+                console.log(root.key);
+            }
+
+            function levelTraversal(root){
+                if ( !root ) return false;//如果头结点为空、返回假
+                var result = []; //创建一个数组存放结果
+                var tree = []; //创建一个数组存放二叉树
+                tree.push(root); //先传入头结点
+
+            // 当tree数组长度不为空
+                while( tree.length ){
+                    var node = tree.shift();                                           
+                    result.push(node.val); //将node结点的值压入result数组中
+                    //如果node结点左子树不为空
+                    if( node.left ){ 
+                        tree.push(node.left); // 将node结点的左子树结点的值压入tree数组中
+                    }
+
+                    //如果node结点又子树不为空
+                    if( node.right ) {
+                    tree.push(node.right); //将node结点的右子树结点的值压入tree数组中
+                    }
+                }
+                return result; //返回result数组
+            }
+
+            // this.DLR=function(){
+            //     console.log(root.key)
+            //     if(root.left){
+            //         this.DLR(root.left)
+            //     }
+            //     if(root.right){
+            //         this.DLR(root.right)
+            //     }
+            // }
+        }
+
+        
+        let tree = new BinarySearchTree()
+        let arr=[20,18,45,39,66,23,70,11]
+        for(let i=0;i<arr.length;i++){
+            tree.insert(arr[i])
+        }
+        
+        
+
+        tree.func(tree.root)
+
+        // // 先序排序 --- 优先于后代节点的顺序访问每个节点
+        // this.preOrderTraverse = function(cb) {
+        //     preOrderTraverseNode(root, cb);
+        // }
+        
+        // // 先序排序辅助方法
+        // function preOrderTraverseNode(node, cb) {
+        //     if(node !== null) {
+        //     cb(node.key);
+        //     preOrderTraverseNode(node.left, cb);
+        //     preOrderTraverseNode(node.right, cb);
+        //     }
+        // }
+        
+
+
+    </script>
+</body>
+</html>

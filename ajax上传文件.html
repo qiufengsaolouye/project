@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf8">
+		<title>test upload</title>
+		<!--jquery-->
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script>
+			//页面加载完时加载此函数
+        	window.onload = function() 
+        	{
+        		$('#uploadBtnId').click(function(e)
+        		{
+        			$('#resultId').html();
+
+        			//使用FormData对象来提交整个表单，它支持文件的上传
+   					var formData=new FormData(document.getElementById("myFormId"));
+   					// formData.append("ddd", 10); //也可使用append追加数据
+					$.ajax(
+					{
+					      url: 'http://www.liulongbin.top:3006/api/upload/avatar',
+					      data: formData,
+					      contentType: false, //false: 自动加上正确的Content-Type
+					      processData: false,  //false： 避开jQuery对 formdata 的默认处理
+					      enctype: 'multipart/form-data',
+					      type: "POST",
+					      complete:function(res)
+					      {
+					      },
+					      success: function (res, status)
+					      {
+							$('#resultId').html(res);
+					      },
+					      error: function(res){
+					      	//错误处理
+
+					      },
+					      xhr: function(){ //获取ajaxSettings中的xhr对象，为它的upload属性绑定progress事件的处理函数
+				           var myXhr = $.ajaxSettings.xhr();
+				           if(myXhr.upload){ //检查upload属性是否存在
+				               //绑定progress事件的回调函数
+				               $('#progressId').text(); //清空
+				               myXhr.upload.addEventListener('progress', function(e) 
+				               {
+				               		if (e.lengthComputable)
+				               		{
+				               			var percent = "上传进度：" + e.loaded/e.total*100 + "%";
+				               			$('#progressId').text(percent);
+                                        console.log(percent)
+				               		}
+				               }, 
+				               false);
+				            }
+				            return myXhr; //xhr对象返回给jQuery使用
+				        },
+					});
+        		});
+        	}
+		</script>
+	</head>
+	<body>
+		<form id="myFormId" onsubmit="return false"> <!--onsubmit阻止点击按钮后浏览器自动提交表单-->
+			文件1：<input type="file" name="file1"><br>
+			<!-- 文本：<input type="text" name="text1"><br> -->
+			<button id="uploadBtnId">点击上传</button>
+		</form>
+		<p id="progressId"></p>
+		<p id="resultId"></p>
+	</body>
+</html>

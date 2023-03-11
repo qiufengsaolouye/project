@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../素材/lib/bootstrap.css">
+</head>
+<body>
+    <!--1. 文件选择框-->
+    <input type="file" id="file1"/>
+    <!--2. 上传按钮-->
+    <button id="btnUpload">上传文件</button>
+    <br/>
+     <!-- 进度条 -->
+    <div class="progress" style="width: 500px; margin: 10px 0;">
+        <div class="progress-bar progress-bar-info progress-bar-striped active" id="percent" style="width: 0%">
+         0%
+         </div>
+     </div>
+    <!--3. 显示上传到服务器上的图片-->
+    <img src="" alt="" id="img" width="800"/>
+
+    
+</body>
+
+<script src="itheima.js"></script>
+<script src="../素材/lib/jquery.js"></script>
+<!-- <script src="../素材/lib/bootstrap.css"></script> -->
+
+<script>
+    let btnUpload=document.querySelector('#btnUpload')
+    btnUpload.addEventListener('click',function(){
+        let files=document.querySelector('#file1').files
+        if(files.length<=0){
+            return alert('请选择需要上传的文件！')
+        }
+        let fd=new FormData()
+        fd.append('avatar',files[0])
+        // itheima({
+        //     method:'POST',
+        //     url:'http://www.liulongbin.top:3006/api/upload/avatar',
+        //     // data:fd,
+        //     success:function(res){
+        //         console.log(res)
+        //     }
+        // })
+//         let xhr=new XMLHttpRequest()
+        
+//         xhr.upload.onprogress = function(e) {
+//     if (e.lengthComputable) {
+//     // 1. 计算出当前上传进度的百分比
+//     var percentComplete = Math.ceil((e.loaded / e.total) * 100)
+//     $('#percent')
+//         // 2. 设置进度条的宽度
+//         .attr('style', 'width:' + percentComplete + '%')
+//         // 3. 显示当前的上传进度百分比
+//         .html(percentComplete + '%')
+//     console.log(percentComplete)
+//     }
+//  }
+//         xhr.open('POST','http://www.liulongbin.top:3006/api/upload/avatar')
+//         xhr.send(fd)
+//         xhr.onreadystatechange = function () {
+//             // console.log(xhr.responseText)
+//             var data = JSON.parse(xhr.responseText)
+//             console.log(data.url)
+//             document.querySelector('#img').src = 'http://www.liulongbin.top:3006' + data.url
+//         }
+
+        
+    $(document).ajaxStart(function(){
+        $('#loading').show()
+    })
+
+        $.ajax({
+            type:'POST',
+            url:'http://www.liulongbin.top:3006/api/upload/avatar',
+            data:fd,
+            // cache: false, 
+            processData: false, 
+            contentType: false, 
+            success:function(res){
+                document.querySelector('#img').src = 'http://www.liulongbin.top:3006' + res.url
+            }
+        })
+//         xhr.upload.onload= function() {
+//      $('#percent')
+//          // 移除上传中的类样式
+//          .removeClass()
+//          // 添加上传完成的类样式
+//          .addClass('progress-bar progress-bar-success')
+//  }
+
+    $(document).ajaxStop(function(){
+        $('#loading').hide()
+    })
+    })
+</script>
+</html>

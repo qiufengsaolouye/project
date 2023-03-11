@@ -1,0 +1,148 @@
+<!--
+ * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @Date: 2023-03-05 14:19:07
+ * @LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @LastEditTime: 2023-03-07 12:27:29
+ * @FilePath: \ajax\code\图书列表.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../素材/lib/bootstrap.css">
+    <style>
+        .panel,.tableBox{
+            /* margin: 15px; */
+            width: 95%;
+            /* width: 1200px; */
+        }
+        
+    </style>
+    
+</head>
+<body>
+    <div class="panel panel-primary center-block">
+        <div class="panel-heading">
+              <h3 class="panel-title">添加新图书</h3>
+        </div>
+        <div class="panel-body blockquote-reverse">
+              <form class="form-inline ">
+                  <div class="form-group">
+                      <label class="sr-only" for="exampleInputBookname">book-name</label>
+                      <div class="input-group">
+                          <div class="input-group-addon">书名</div>
+                          <input type="text" class="form-control" id="exampleInputBookname" placeholder="请输入书名"
+                          required>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label class="sr-only" for="exampleInputAuthor">author</label>
+                      <div class="input-group">
+                          <div class="input-group-addon">作者</div>
+                          <input type="text" class="form-control" id="exampleInputAuthor" placeholder="请输入作者"
+                          required>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label class="sr-only" for="exampleInputPublisher">publisher</label>
+                      <div class="input-group">
+                          <div class="input-group-addon">出版社</div>
+                          <input type="text" class="form-control" id="exampleInputPublisher" placeholder="请输入出版社"
+                          required>
+                      </div>
+                  </div>
+                  
+                  <input type="submit" value="添加" class="btn btn-primary">
+                  <!-- <button type="button" class="btn btn-primary">添加</button> -->
+              </form>
+        </div>
+    </div>
+  
+  <div class="tableBox center-block">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>书名</th>
+                <th>作者</th>
+                <th>出版社</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody class="tb">
+            
+        </tbody>
+      </table>
+  </div>
+  
+  
+
+    <script src="../素材/lib/jquery.js"></script>
+    <script>
+        $(function(){
+            
+            function getBooks(){
+                $.get('http://www.liulongbin.top:3006/api/getbooks',function(res){
+                if(res.status!==200){
+                    return alert('错误!')
+                }
+                let bookList=[]
+                for(let i=0;i<res.data.length;i++){
+                    bookList.push(`<tr>
+                            <td class='bookid'>${res.data[i].id}</td>
+                            <td>${res.data[i].bookname}</td>
+                            <td>${res.data[i].author}</td>
+                            <td>${res.data[i].publisher}</td>
+                            <td>
+                                <a class="del" href="javascript:;">删除</a>
+                            </td>
+                            </tr>`)
+                }
+                $('.tb')
+                .empty()
+                .append(bookList.join(''))
+                 $('.del').on('click',function(e){
+                    let num=$(this).parent().siblings('.bookid').text()
+                    $.get('http://www.liulongbin.top:3006/api/delbook',{id:num},function(res){
+                        if(res.status!==200){
+                            return alert('删除图书失败')
+                        }
+                        
+                        getBooks()
+                    })
+                })
+            })
+            }
+            //启动网页，添加内容
+            getBooks()
+
+            // 添加书籍
+            // $('.btn')
+            // .on('click',function(e){
+               
+            // })
+
+            $('form').on('submit',function(e){
+                // console.log(1)
+                e.preventDefault()
+
+                $.post('http://www.liulongbin.top:3006/api/addbook',
+                        {bookname:$('#exampleInputBookname').val(),
+                         author:$('#exampleInputAuthor').val(),
+                         publisher:$('#exampleInputPublisher').val()},
+                         function(res){
+                            if(res.status!==201){
+                                return alert('添加图书失败！')
+                            }
+                            getBooks()
+                         })
+            })
+            
+        })
+    </script>
+</body>
+</html>
